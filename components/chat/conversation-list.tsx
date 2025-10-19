@@ -5,7 +5,7 @@ import { auth, db } from "@/lib/firebase"
 import { collection, query, where, onSnapshot, orderBy, getDoc, doc } from "firebase/firestore"
 import { motion } from "framer-motion"
 import { MessageCircle } from "lucide-react"
-import { MobileTypingIndicator } from "./typing-indicator"
+import TypingIndicator from "./typing-indicator"
 import { useTypingIndicator } from "@/hooks/use-typing-indicator"
 
 interface Conversation {
@@ -92,9 +92,10 @@ function ConversationItem({
           <div className="flex items-center justify-between gap-2">
             <div className="flex-1 min-w-0">
               {typingUsers.length > 0 ? (
-                <MobileTypingIndicator 
+                <TypingIndicator 
                   typingUsers={typingUsers} 
                   userNames={userNames}
+                  variant="mobile"
                 />
               ) : (
                 <p className="text-xs md:text-sm text-gray-600 truncate">{conv.lastMessage}</p>
@@ -124,7 +125,7 @@ export default function ConversationList({
 
   useEffect(() => {
     // Wait for authentication to be ready
-    const unsubscribeAuth = auth.onAuthStateChanged((user) => {
+    const unsubscribeAuth = auth.onAuthStateChanged((user: any) => {
       if (!user) {
         setLoading(false)
         setConversations([])
