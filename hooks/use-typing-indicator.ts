@@ -98,9 +98,22 @@ export function useTypingIndicator(conversationId: string) {
     setTyping(false)
   }
 
-  // Cleanup on unmount
+  // Cleanup on unmount and page visibility changes (mobile optimization)
   useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        // Clean up typing indicator when app goes to background
+        if (typingTimeoutRef.current) {
+          clearTimeout(typingTimeoutRef.current)
+        }
+        setTyping(false)
+      }
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
     return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current)
       }

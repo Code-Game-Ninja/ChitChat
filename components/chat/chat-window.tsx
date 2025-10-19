@@ -147,6 +147,10 @@ export default function ChatWindow({ conversationId, onBack }: ChatWindowProps) 
       }, 100)
     } catch (error) {
       console.error("Error sending message:", error)
+      // Show user-friendly error on mobile
+      if (typeof window !== 'undefined' && window.innerWidth < 768) {
+        alert('Failed to send message. Please check your connection and try again.')
+      }
     } finally {
       setSending(false)
     }
@@ -162,11 +166,21 @@ export default function ChatWindow({ conversationId, onBack }: ChatWindowProps) 
     }
   }
 
-  // Handle input blur (stop typing)
+  // Handle input blur (stop typing) - mobile optimized
   const handleInputBlur = () => {
-    setTimeout(() => {
-      stopTyping()
-    }, 1000) // Small delay to prevent flickering when switching focus
+    // Only stop typing if not on mobile or if user actually left the input
+    if (typeof window !== 'undefined' && window.innerWidth >= 768) {
+      setTimeout(() => {
+        stopTyping()
+      }, 1000)
+    } else {
+      // On mobile, longer delay to handle virtual keyboard behavior
+      setTimeout(() => {
+        if (document.activeElement !== inputRef.current) {
+          stopTyping()
+        }
+      }, 2000)
+    }
   }
 
   const formatTime = (timestamp: any) => {

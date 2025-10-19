@@ -28,24 +28,34 @@ export class ErrorBoundary extends Component<Props, State> {
   public render() {
     if (this.state.hasError) {
       return this.props.fallback || (
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-white to-blue-50">
-          <div className="text-center p-8 bg-white rounded-lg shadow-lg border border-red-200">
-            <div className="text-red-500 text-4xl mb-4">⚠️</div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">Something went wrong</h2>
-            <p className="text-gray-600 mb-4">We're having trouble loading ChitChat right now.</p>
-            <button
-              onClick={() => {
-                this.setState({ hasError: false, error: undefined })
-                window.location.reload()
-              }}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-            >
-              Try Again
-            </button>
+        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-white to-blue-50 p-4">
+          <div className="text-center p-6 md:p-8 bg-white rounded-lg shadow-lg border border-red-200 max-w-md w-full">
+            <div className="text-red-500 text-3xl md:text-4xl mb-4">⚠️</div>
+            <h2 className="text-lg md:text-xl font-semibold text-gray-900 mb-2">Something went wrong</h2>
+            <p className="text-sm md:text-base text-gray-600 mb-4">We're having trouble loading ChitChat right now.</p>
+            <div className="space-y-2">
+              <button
+                onClick={() => {
+                  this.setState({ hasError: false, error: undefined })
+                  window.location.reload()
+                }}
+                className="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors touch-manipulation"
+              >
+                Reload App
+              </button>
+              <button
+                onClick={() => {
+                  this.setState({ hasError: false, error: undefined })
+                }}
+                className="w-full px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors touch-manipulation"
+              >
+                Try Again
+              </button>
+            </div>
             {process.env.NODE_ENV === 'development' && this.state.error && (
               <details className="mt-4 text-left">
                 <summary className="cursor-pointer text-sm text-gray-500">Error Details</summary>
-                <pre className="mt-2 text-xs text-red-600 bg-red-50 p-2 rounded overflow-auto">
+                <pre className="mt-2 text-xs text-red-600 bg-red-50 p-2 rounded overflow-auto max-h-32">
                   {this.state.error.toString()}
                 </pre>
               </details>

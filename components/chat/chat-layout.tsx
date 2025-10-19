@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { auth, db } from "@/lib/firebase"
 import { doc, getDoc } from "firebase/firestore"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import ConversationList from "./conversation-list"
 import ChatWindow from "./chat-window"
 import FriendRequests from "./friend-requests"
@@ -242,5 +242,3 @@ export default function ChatLayout() {
     </div>
   )
 }
-
-import { AnimatePresence } from "framer-motion"

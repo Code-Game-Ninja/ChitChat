@@ -421,22 +421,15 @@ body {
     font-size: 16px !important;
   }
   
-  /* Force mobile input to be always visible */
+  /* Mobile input wrapper - less aggressive positioning */
   .mobile-input-wrapper {
-    position: fixed !important;
+    position: sticky !important;
     bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    z-index: 10000 !important;
     background: linear-gradient(to right, #ffffff 90%, #f0f9ff 90%) !important;
     padding: 16px !important;
     padding-bottom: calc(16px + env(safe-area-inset-bottom, 16px)) !important;
-    border-top: 2px solid #3b82f6 !important;
-    box-shadow: 0 -4px 16px rgba(59, 130, 246, 0.2) !important;
-  }
-  
-  /* Adjust body padding to prevent overlap */
-  body {
-    padding-bottom: 80px !important;
+    border-top: 2px solid #e5e7eb !important;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1) !important;
+    z-index: 20 !important;
   }
 }
