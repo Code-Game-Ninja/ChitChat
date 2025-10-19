@@ -7,8 +7,11 @@
 ![Firebase](https://img.shields.io/badge/Firebase-Latest-orange?style=for-the-badge&logo=firebase)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)
 ![Vercel](https://img.shields.io/badge/Vercel-Deployed-black?style=for-the-badge&logo=vercel)
+![AI Powered](https://img.shields.io/badge/AI%20Powered-GitHub%20Copilot-purple?style=for-the-badge&logo=github)
 
 **A modern, WhatsApp-style messaging application with real-time features**
+
+*🤖 Developed with AI assistance from GitHub Copilot*
 
 [🚀 Live Demo](https://chit-chat.vercel.app) • [📖 Documentation](#-features) • [🛠️ Setup](#-quick-start) • [🤝 Contributing](#-contributing)
 
@@ -110,7 +113,7 @@ Git
 
 5. **Run Development Server**
    ```bash
-   pnpm dev
+   pnpm dev 
    # Open http://localhost:3000
    ```
 
@@ -334,12 +337,28 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ## 🙏 Acknowledgments
 
+- 🤖 **GitHub Copilot** - AI-powered development assistance and code generation
 - 🚀 **Next.js Team** - Amazing React framework
 - 🔥 **Firebase Team** - Powerful backend platform  
 - 🎨 **Tailwind CSS** - Utility-first CSS framework
 - ✨ **Framer Motion** - Beautiful animations
 - 🔧 **Vercel** - Seamless deployment platform
 - 💝 **Open Source Community** - Inspiration and tools
+
+---
+
+## 🤖 AI Development
+
+This project was developed with significant assistance from **GitHub Copilot**, an AI-powered coding assistant. The AI helped with:
+
+- 🏗️ **Architecture Design** - Planning the real-time messaging system
+- 💻 **Code Generation** - Writing components, hooks, and utility functions  
+- 🐛 **Problem Solving** - Debugging and optimization solutions
+- 📱 **Mobile Optimization** - Responsive design and touch interactions
+- 🔥 **Firebase Integration** - Real-time database and authentication setup
+- 📖 **Documentation** - Creating comprehensive guides and comments
+
+*AI tools enhance human creativity and productivity in modern software development.*
 
 ---
 
