@@ -207,9 +207,9 @@ export default function ChatWindow({ conversationId, onBack }: ChatWindowProps) 
   }
 
   return (
-    <div className="flex flex-col h-full bg-gradient-to-br from-white via-blue-50/30 to-white mobile-chat-window">
+    <div className="flex flex-col h-screen md:h-full bg-gradient-to-br from-white via-blue-50/30 to-white mobile-chat-window overflow-hidden">
       {/* Header - Mobile optimized */}
-      <div className="p-3 md:p-4 border-b border-blue-200 bg-gradient-to-r from-white via-blue-50 to-white shadow-sm sticky top-0 z-10">
+      <div className="flex-shrink-0 p-3 md:p-4 border-b border-blue-200 bg-gradient-to-r from-white via-blue-50 to-white shadow-sm sticky top-0 z-10">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
             {onBack && (
@@ -262,8 +262,8 @@ export default function ChatWindow({ conversationId, onBack }: ChatWindowProps) 
         </div>
       </div>
 
-      {/* Messages - Mobile optimized */}
-      <div className="flex-1 overflow-y-auto p-3 md:p-4 space-y-3 md:space-y-4 pb-safe mobile-messages chat-messages-container">
+      {/* Messages - Mobile optimized with proper scroll containment */}
+      <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 md:p-4 space-y-3 md:space-y-4 mobile-messages chat-messages-container">
         <AnimatePresence>
           {messages.length === 0 ? (
             <div className="flex items-center justify-center h-full text-muted-foreground">
@@ -316,7 +316,7 @@ export default function ChatWindow({ conversationId, onBack }: ChatWindowProps) 
       </div>
 
       {/* Input - Mobile optimized with fixed positioning */}
-      <div className="md:sticky md:bottom-0 p-3 md:p-4 border-t border-blue-200 bg-gradient-to-r from-white to-blue-50 shadow-lg pb-safe z-20 chat-input-container mobile-input-wrapper">
+      <div className="flex-shrink-0 fixed md:sticky bottom-0 left-0 right-0 md:bottom-0 p-3 md:p-4 border-t border-blue-200 bg-gradient-to-r from-white to-blue-50 shadow-lg pb-safe z-20 chat-input-container mobile-input-wrapper">
         <form onSubmit={handleSendMessage} className="flex gap-2 md:gap-3 items-end w-full max-w-none">
           <div className="flex-1 relative">
             <input

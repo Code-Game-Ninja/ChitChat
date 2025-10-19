@@ -243,6 +243,16 @@ body {
   .pr-safe {
     padding-right: env(safe-area-inset-right);
   }
+}
+
+/* Prevent body scroll on mobile when in chat */
+@media (max-width: 767px) {
+  body {
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
   
   .overscroll-contain {
     overscroll-behavior: contain;
@@ -402,18 +412,42 @@ body {
     overflow-y: auto !important;
   }
   
-  /* Ensure input stays visible when keyboard opens */
+  /* Mobile chat window with proper scroll containment */
   .mobile-chat-window {
     height: 100vh !important;
     height: 100dvh !important;
     display: flex !important;
     flex-direction: column !important;
+    overflow: hidden !important;
   }
   
+  /* Messages container with independent scroll */
   .mobile-messages {
     flex: 1 !important;
     overflow-y: auto !important;
-    padding-bottom: 20px !important;
+    overflow-x: hidden !important;
+    padding-bottom: 100px !important; /* Space for fixed input */
+    max-height: calc(100vh - 140px) !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  /* Chat messages container optimizations */
+  .chat-messages-container {
+    scrollbar-width: thin !important;
+    scrollbar-color: #cbd5e1 transparent !important;
+  }
+  
+  .chat-messages-container::-webkit-scrollbar {
+    width: 4px !important;
+  }
+  
+  .chat-messages-container::-webkit-scrollbar-track {
+    background: transparent !important;
+  }
+  
+  .chat-messages-container::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1 !important;
+    border-radius: 2px !important;
   }
   
   /* Prevent zoom on iOS input fields */
@@ -421,15 +455,26 @@ body {
     font-size: 16px !important;
   }
   
-  /* Mobile input wrapper - less aggressive positioning */
+  /* Mobile input wrapper - fixed at bottom */
   .mobile-input-wrapper {
-    position: sticky !important;
+    position: fixed !important;
     bottom: 0 !important;
-    background: linear-gradient(to right, #ffffff 90%, #f0f9ff 90%) !important;
-    padding: 16px !important;
-    padding-bottom: calc(16px + env(safe-area-inset-bottom, 16px)) !important;
-    border-top: 2px solid #e5e7eb !important;
-    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1) !important;
-    z-index: 20 !important;
+    left: 0 !important;
+    right: 0 !important;
+    background: linear-gradient(to right, #ffffff 95%, #f0f9ff 95%) !important;
+    padding: 12px 16px !important;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 16px)) !important;
+    border-top: 1px solid #e5e7eb !important;
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.1) !important;
+    z-index: 30 !important;
+  }
+  
+  /* Desktop input wrapper */
+  @media (min-width: 768px) {
+    .mobile-input-wrapper {
+      position: sticky !important;
+      left: auto !important;
+      right: auto !important;
+    }
   }
 }

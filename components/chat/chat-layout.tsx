@@ -66,7 +66,7 @@ export default function ChatLayout() {
   }
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-white via-blue-50/30 to-white overflow-hidden">
+    <div className="flex h-screen bg-gradient-to-br from-white via-blue-50/30 to-white overflow-hidden relative">
       {/* Sidebar - Enhanced mobile responsive */}
       <motion.div
         initial={{ x: -300 }}
@@ -146,7 +146,7 @@ export default function ChatLayout() {
       </motion.div>
 
       {/* Chat Window - Enhanced responsive design */}
-      <div className="flex-1 flex flex-col md:flex relative">
+      <div className="flex-1 flex flex-col relative overflow-hidden">
         {selectedConversation ? (
           <>
             {/* Mobile header - improved touch targets */}
