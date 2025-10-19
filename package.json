@@ -1,0 +1,45 @@
+{
+  "name": "chitchat",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "lint": "next lint",
+    "start": "next start",
+    "export": "next export",
+    "build:production": "NODE_ENV=production next build",
+    "deploy:production": "npm run build:production && firebase deploy",
+    "deploy:hosting": "firebase deploy --only hosting",
+    "deploy:firestore": "firebase deploy --only firestore",
+    "deploy:storage": "firebase deploy --only storage",
+    "clean": "rm -rf .next out",
+    "type-check": "tsc --noEmit",
+    "analyze": "cross-env ANALYZE=true next build"
+  },
+  "dependencies": {
+    "@emotion/is-prop-valid": "latest",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "firebase": "latest",
+    "framer-motion": "latest",
+    "lucide-react": "^0.454.0",
+    "next": "15.2.4",
+    "react": "^19",
+    "react-dom": "^19",
+    "tailwind-merge": "^2.5.5",
+    "tailwindcss-animate": "^1.0.7",
+    "tw-animate-css": "latest"
+  },
+  "devDependencies": {
+    "@next/bundle-analyzer": "^15.5.6",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "autoprefixer": "^10.4.21",
+    "cross-env": "^10.1.0",
+    "postcss": "^8.5",
+    "tailwindcss": "^3.4.18",
+    "typescript": "^5"
+  }
+}
