@@ -7,6 +7,7 @@ import { motion } from "framer-motion"
 import { MessageCircle } from "lucide-react"
 import TypingIndicator from "./typing-indicator"
 import { useTypingIndicator } from "@/hooks/use-typing-indicator"
+import { usePresence } from "@/hooks/use-presence"
 
 interface Conversation {
   id: string
@@ -32,6 +33,7 @@ function ConversationItem({
   index: number
 }) {
   const { typingUsers, userNames } = useTypingIndicator(conv.id)
+  const { isUserActive } = usePresence(conv.participantId)
   
   const formatTime = (timestamp: any) => {
     if (!timestamp) return ""
@@ -71,15 +73,21 @@ function ConversationItem({
       }`}
     >
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center flex-shrink-0">
-          {conv.participantAvatar ? (
-            <img
-              src={conv.participantAvatar || "/placeholder.svg"}
-              alt={conv.participantName}
-              className="w-full h-full rounded-full object-cover"
-            />
-          ) : (
-            <span className="text-white font-bold text-xs md:text-sm">{getInitials(conv.participantName)}</span>
+        <div className="relative">
+          <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center flex-shrink-0">
+            {conv.participantAvatar ? (
+              <img
+                src={conv.participantAvatar || "/placeholder.svg"}
+                alt={conv.participantName}
+                className="w-full h-full rounded-full object-cover"
+              />
+            ) : (
+              <span className="text-white font-bold text-xs md:text-sm">{getInitials(conv.participantName)}</span>
+            )}
+          </div>
+          {/* Online status indicator */}
+          {isUserActive && (
+            <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
           )}
         </div>
         <div className="flex-1 min-w-0">

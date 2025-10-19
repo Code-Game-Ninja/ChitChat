@@ -19,6 +19,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Send, ArrowLeft } from "lucide-react"
 import { useTypingIndicator } from "@/hooks/use-typing-indicator"
 import TypingIndicator from "./typing-indicator"
+import PresenceIndicator from "./presence-indicator"
 
 interface Message {
   id: string
@@ -39,6 +40,7 @@ export default function ChatWindow({ conversationId, onBack }: ChatWindowProps) 
   const [loading, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
   const [otherUser, setOtherUser] = useState<any>(null)
+  const [otherUserId, setOtherUserId] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -63,6 +65,9 @@ export default function ChatWindow({ conversationId, onBack }: ChatWindowProps) 
           const otherUserId = data.participants.find((id: string) => id !== auth.currentUser?.uid)
 
           if (otherUserId) {
+            // Store other user ID for presence tracking
+            setOtherUserId(otherUserId)
+            
             // Set up real-time listener for user data
             const userDocRef = doc(db, "users", otherUserId)
             const unsubscribeUser = onSnapshot(userDocRef, (userDoc) => {
@@ -236,7 +241,14 @@ export default function ChatWindow({ conversationId, onBack }: ChatWindowProps) 
             <div className="flex-1 min-w-0">
               <h2 className="font-semibold text-gray-900 text-sm md:text-base truncate">{otherUser?.displayName || "Loading..."}</h2>
               <div className="flex items-center gap-2">
-                <p className="text-xs text-gray-600">{otherUser?.status === "online" ? "Active now" : "Offline"}</p>
+                {otherUserId && (
+                  <PresenceIndicator 
+                    userId={otherUserId} 
+                    showText={true} 
+                    showDot={true} 
+                    size="sm" 
+                  />
+                )}
                 {typingUsers.length > 0 && (
                   <TypingIndicator 
                     typingUsers={typingUsers} 
