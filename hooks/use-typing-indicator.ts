@@ -12,40 +12,54 @@ export function useTypingIndicator(conversationId: string) {
 
   // Listen for typing indicators from other users
   useEffect(() => {
-    if (!conversationId || !auth.currentUser) return
+    if (!conversationId || !auth?.currentUser) return
 
-    const typingRef = collection(db, 'typing', conversationId, 'users')
-    
-    const unsubscribe = onSnapshot(typingRef, (snapshot) => {
-      const typing: string[] = []
-      const names: Record<string, string> = {}
+    try {
+      const typingRef = collection(db, 'typing', conversationId, 'users')
       
-      snapshot.docs.forEach((doc) => {
-        const data = doc.data()
-        if (doc.id !== auth.currentUser?.uid && data.isTyping) {
-          typing.push(doc.id)
-          names[doc.id] = data.userName || 'Someone'
+      const unsubscribe = onSnapshot(
+        typingRef, 
+        (snapshot) => {
+          const typing: string[] = []
+          const names: Record<string, string> = {}
+          
+          snapshot.docs.forEach((doc) => {
+            const data = doc.data()
+            if (doc.id !== auth.currentUser?.uid && data?.isTyping) {
+              typing.push(doc.id)
+              names[doc.id] = data.userName || 'Someone'
+            }
+          })
+          
+          setTypingUsers(typing)
+          setUserNames(names)
+        },
+        (error) => {
+          console.warn('Typing indicator listener error:', error)
+          // Reset typing state on error
+          setTypingUsers([])
+          setUserNames({})
         }
-      })
-      
-      setTypingUsers(typing)
-      setUserNames(names)
-    })
+      )
 
-    return () => unsubscribe()
+      return () => unsubscribe()
+    } catch (error) {
+      console.warn('Failed to set up typing indicator listener:', error)
+      return () => {}
+    }
   }, [conversationId])
 
   // Set typing indicator
   const setTyping = async (isTyping: boolean, userName?: string) => {
-    if (!conversationId || !auth.currentUser) return
-
-    const typingDocRef = doc(db, 'typing', conversationId, 'users', auth.currentUser.uid)
+    if (!conversationId || !auth?.currentUser || !db) return
 
     try {
+      const typingDocRef = doc(db, 'typing', conversationId, 'users', auth.currentUser.uid)
+
       if (isTyping) {
         await setDoc(typingDocRef, {
           isTyping: true,
-          userName: userName || 'User',
+          userName: userName || auth.currentUser.displayName || 'User',
           timestamp: serverTimestamp(),
         }, { merge: true })
         isTypingRef.current = true
@@ -55,6 +69,7 @@ export function useTypingIndicator(conversationId: string) {
       }
     } catch (error) {
       console.warn('Failed to update typing indicator:', error)
+      // Don't throw error, just log it - typing indicators are not critical
     }
   }
 
