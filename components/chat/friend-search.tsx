@@ -2,17 +2,18 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { auth, db } from "@/lib/firebase"
-import { collection, query, getDocs, addDoc, serverTimestamp } from "firebase/firestore"
+import { collection, query, getDocs, addDoc, serverTimestamp, where } from "firebase/firestore"
 import { motion } from "framer-motion"
-import { Search, UserPlus, Clock } from "lucide-react"
+import { Search, UserPlus, Clock, UserCheck } from "lucide-react"
 
 interface SearchResult {
   uid: string
   displayName: string
   email: string
   photoURL?: string
+  relationshipStatus?: 'none' | 'pending-sent' | 'pending-received' | 'friends'
 }
 
 export default function FriendSearch() {
@@ -20,7 +21,79 @@ export default function FriendSearch() {
   const [results, setResults] = useState<SearchResult[]>([])
   const [loading, setLoading] = useState(false)
   const [sentRequests, setSentRequests] = useState<Set<string>>(new Set())
+  const [friends, setFriends] = useState<Set<string>>(new Set())
+  const [pendingRequests, setPendingRequests] = useState<Set<string>>(new Set())
   const [error, setError] = useState("")
+
+  // Load existing relationships on component mount
+  useEffect(() => {
+    if (auth.currentUser) {
+      loadExistingRelationships()
+    }
+  }, [auth.currentUser])
+
+  const loadExistingRelationships = async () => {
+    if (!auth.currentUser) return
+
+    try {
+      // Load existing friendships - check both directions
+      const friendships1 = query(collection(db, "friendships"), where("user1Id", "==", auth.currentUser.uid))
+      const friendships2 = query(collection(db, "friendships"), where("user2Id", "==", auth.currentUser.uid))
+      
+      const [snapshot1, snapshot2] = await Promise.all([
+        getDocs(friendships1),
+        getDocs(friendships2)
+      ])
+      
+      const friendIds = new Set<string>()
+      
+      snapshot1.forEach((doc) => {
+        const data = doc.data()
+        friendIds.add(data.user2Id)
+      })
+      
+      snapshot2.forEach((doc) => {
+        const data = doc.data()
+        friendIds.add(data.user1Id)
+      })
+      
+      setFriends(friendIds)
+
+      // Load pending friend requests - check both sent and received
+      const sentRequests = query(
+        collection(db, "friendRequests"),
+        where("senderId", "==", auth.currentUser.uid),
+        where("status", "==", "pending")
+      )
+      
+      const receivedRequests = query(
+        collection(db, "friendRequests"),
+        where("receiverId", "==", auth.currentUser.uid),
+        where("status", "==", "pending")
+      )
+      
+      const [sentSnapshot, receivedSnapshot] = await Promise.all([
+        getDocs(sentRequests),
+        getDocs(receivedRequests)
+      ])
+      
+      const pendingIds = new Set<string>()
+      
+      sentSnapshot.forEach((doc) => {
+        const data = doc.data()
+        pendingIds.add(data.receiverId)
+      })
+      
+      receivedSnapshot.forEach((doc) => {
+        const data = doc.data()
+        pendingIds.add(data.senderId)
+      })
+      
+      setPendingRequests(pendingIds)
+    } catch (err) {
+      console.error("Error loading relationships:", err)
+    }
+  }
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -43,11 +116,23 @@ export default function FriendSearch() {
           doc.id !== auth.currentUser?.uid &&
           (data.displayName?.toLowerCase().includes(searchLower) || data.email?.toLowerCase().includes(searchLower))
         ) {
+          // Determine relationship status
+          let relationshipStatus: 'none' | 'pending-sent' | 'pending-received' | 'friends' = 'none'
+          
+          if (friends.has(doc.id)) {
+            relationshipStatus = 'friends'
+          } else if (pendingRequests.has(doc.id)) {
+            relationshipStatus = 'pending-sent' // We'll refine this below if needed
+          } else if (sentRequests.has(doc.id)) {
+            relationshipStatus = 'pending-sent'
+          }
+          
           searchResults.push({
             uid: doc.id,
             displayName: data.displayName || "Unknown",
             email: data.email,
             photoURL: data.photoURL,
+            relationshipStatus,
           })
         }
       })
@@ -150,29 +235,27 @@ export default function FriendSearch() {
                   <p className="text-xs text-text-secondary">{user.email}</p>
                 </div>
               </div>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => handleSendRequest(user.uid)}
-                disabled={sentRequests.has(user.uid)}
-                className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors flex items-center gap-1 ${
-                  sentRequests.has(user.uid)
-                    ? "bg-surface text-text-secondary cursor-not-allowed"
-                    : "bg-primary hover:bg-primary-dark text-background"
-                }`}
-              >
-                {sentRequests.has(user.uid) ? (
-                  <>
-                    <Clock size={16} />
-                    Pending
-                  </>
-                ) : (
-                  <>
-                    <UserPlus size={16} />
-                    Add
-                  </>
-                )}
-              </motion.button>
+              {user.relationshipStatus === 'friends' ? (
+                <div className="px-4 py-2 rounded-lg font-medium text-sm bg-green-100 text-green-700 flex items-center gap-1">
+                  <UserCheck size={16} />
+                  Friends
+                </div>
+              ) : user.relationshipStatus === 'pending-sent' || sentRequests.has(user.uid) ? (
+                <div className="px-4 py-2 rounded-lg font-medium text-sm bg-yellow-100 text-yellow-700 flex items-center gap-1">
+                  <Clock size={16} />
+                  Pending
+                </div>
+              ) : (
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => handleSendRequest(user.uid)}
+                  className="px-4 py-2 rounded-lg font-medium text-sm transition-colors flex items-center gap-1 bg-primary hover:bg-primary-dark text-background"
+                >
+                  <UserPlus size={16} />
+                  Add
+                </motion.button>
+              )}
             </motion.div>
           ))}
         </div>
