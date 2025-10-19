@@ -207,7 +207,7 @@ export default function ChatWindow({ conversationId, onBack }: ChatWindowProps) 
   }
 
   return (
-    <div className="flex flex-col h-screen md:h-full bg-gradient-to-br from-white via-blue-50/30 to-white mobile-chat-window overflow-hidden">
+    <div className="flex flex-col h-screen md:h-full bg-gradient-to-br from-white via-blue-50/30 to-white mobile-chat-window md:overflow-visible overflow-hidden">
       {/* Header - Mobile optimized */}
       <div className="flex-shrink-0 p-3 md:p-4 border-b border-blue-200 bg-gradient-to-r from-white via-blue-50 to-white shadow-sm sticky top-0 z-10">
         <div className="flex items-center justify-between">
@@ -262,8 +262,8 @@ export default function ChatWindow({ conversationId, onBack }: ChatWindowProps) 
         </div>
       </div>
 
-      {/* Messages - Mobile optimized with proper scroll containment */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 md:p-4 space-y-3 md:space-y-4 mobile-messages chat-messages-container">
+      {/* Messages - Responsive scrolling container */}
+      <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 md:p-4 space-y-3 md:space-y-4 mobile-messages chat-messages-container messages-scroll-container">
         <AnimatePresence>
           {messages.length === 0 ? (
             <div className="flex items-center justify-center h-full text-muted-foreground">
