@@ -224,7 +224,11 @@ export default function ChatWindow({ conversationId, onBack }: ChatWindowProps) 
               <div className="flex items-center gap-2">
                 <p className="text-xs text-gray-600">{otherUser?.status === "online" ? "Active now" : "Offline"}</p>
                 {typingUsers.length > 0 && (
-                  <span className="text-xs text-blue-600 animate-pulse font-semibold">typing...</span>
+                  <TypingIndicator 
+                    typingUsers={typingUsers} 
+                    userNames={userNames}
+                    variant="inline"
+                  />
                 )}
               </div>
             </div>
@@ -238,6 +242,7 @@ export default function ChatWindow({ conversationId, onBack }: ChatWindowProps) 
           <TypingIndicator 
             typingUsers={typingUsers} 
             userNames={userNames}
+            variant="mobile"
             className="!px-0 !py-1"
           />
         </div>
@@ -286,7 +291,11 @@ export default function ChatWindow({ conversationId, onBack }: ChatWindowProps) 
         
         {/* Desktop typing indicator */}
         <div className="hidden md:block">
-          <TypingIndicator typingUsers={typingUsers} userNames={userNames} />
+          <TypingIndicator 
+            typingUsers={typingUsers} 
+            userNames={userNames}
+            variant="desktop" 
+          />
         </div>
         
         <div ref={messagesEndRef} />
